@@ -24,3 +24,5 @@ while not done:
     print(f"Step: {env.current_step}, Action: {action}, Cash: {env.cash}, Shares: {env.shares}, Total: {env.total_asset}")
 
 print("✅ Evaluation done!")
+
+

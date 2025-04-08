@@ -5,14 +5,14 @@ import numpy as np
 import pandas as pd
 
 class SingleStockTradingEnv(gym.Env):
-    def __init__(self, data, window_size=10, initial_cash=100000):
+    def __init__(self, data, window_size=10, initial_cash=1000000):
         super(SingleStockTradingEnv, self).__init__()
 
         self.data = data.reset_index()
         self.window_size = window_size
         self.initial_cash = initial_cash
 
-        self.action_space = gym.spaces.Discrete(3)  # 0: Hold, 1: Buy, 2: Sell
+        self.action_space = gym.spaces.Discrete(5)  # instead of 3
         self.observation_space = gym.spaces.Box(
             low=-np.inf, high=np.inf, shape=(window_size + 2,), dtype=np.float32
         )
@@ -42,15 +42,30 @@ class SingleStockTradingEnv(gym.Env):
 
         prev_total_asset = self.cash + self.shares * price
 
-        # Execute action
-        if action == 1:  # Buy
-            if self.cash >= price:
-                self.cash -= price
-                self.shares += 1
-        elif action == 2:  # Sell
-            if self.shares > 0:
-                self.cash += price
-                self.shares -= 1
+        shares_to_buy = 0
+        shares_to_sell = 0
+
+        if action == 1:  # Buy small
+            shares_to_buy = min(int(self.cash // price * 0.1), 10)
+
+        elif action == 2:  # Buy big
+            shares_to_buy = int(self.cash // price * 0.5)
+
+        elif action == 3:  # Sell small
+            shares_to_sell = min(int(self.shares * 0.1), 10)
+
+        elif action == 4:  # Sell all
+            shares_to_sell = self.shares
+
+        # Execute
+        if shares_to_buy > 0:
+            self.cash -= shares_to_buy * price
+            self.shares += shares_to_buy
+
+        if shares_to_sell > 0:
+            self.cash += shares_to_sell * price
+            self.shares -= shares_to_sell
+
 
         self.current_step += 1
         done = self.current_step >= len(self.data) - 1
