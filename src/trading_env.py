@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 
 class SingleStockTradingEnv(gym.Env):
-    def __init__(self, data, window_size=10, initial_cash=1000000):
+    def __init__(self, data, window_size=10, initial_cash=100000):
         super(SingleStockTradingEnv, self).__init__()
 
         self.data = data.reset_index()
