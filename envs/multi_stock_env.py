@@ -3,7 +3,7 @@ import gym
 from gym import spaces
 
 class MultiStockTradingEnv(gym.Env):
-    def __init__(self, df, stock_names, initial_balance=1e6):
+    def __init__(self, df, stock_names, initial_balance=100000):
         super(MultiStockTradingEnv, self).__init__()
         self.df = df
         self.stock_names = stock_names
