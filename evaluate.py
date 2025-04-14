@@ -7,6 +7,7 @@ df.columns = ['Date', 'Close', 'High', 'Low', 'Open', 'Volume']
 df['Close'] = pd.to_numeric(df['Close'], errors='coerce')
 df = df.dropna(subset=['Close']).reset_index(drop=True)
 
+# environment creation
 env = SingleStockTradingEnv(df)
 model = PPO.load("models/ppo_reliance")
 
