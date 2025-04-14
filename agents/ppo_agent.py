@@ -3,6 +3,7 @@
 from stable_baselines3 import PPO
 from stable_baselines3.common.vec_env import DummyVecEnv
 
+# agent class
 class PPOStockTrader:
     def __init__(self, env):
         self.env = DummyVecEnv([lambda: env])
