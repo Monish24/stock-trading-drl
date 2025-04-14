@@ -6,11 +6,11 @@ from environment import TradingEnvironment
 from agent import TradingAgent
 from utils import plot_performance
 
-# Parameters
+# Parameters? maybe
 DATA_DIR = Path("data/raw")
 TICKER = "RELIANCE.NS"
 EPISODES = 10
-INITIAL_BALANCE = 100000  # INR
+INITIAL_BALANCE = 100000  #Rupees
 
 def load_data(ticker):
     filepath = DATA_DIR / f"{ticker}.csv"
