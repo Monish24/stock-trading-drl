@@ -10,7 +10,7 @@ from utils import plot_performance
 DATA_DIR = Path("data/raw")
 TICKER = "RELIANCE.NS"
 EPISODES = 10
-INITIAL_BALANCE = 100000  #Rupees
+INITIAL_BALANCE = 10000  #Rupees
 
 def load_data(ticker):
     filepath = DATA_DIR / f"{ticker}.csv"
