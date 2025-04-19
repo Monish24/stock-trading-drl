@@ -3,7 +3,6 @@ from envs.single_stock_env import SingleStockTradingEnv
 from stable_baselines3 import PPO
 import pandas as pd
 
-# Load the stock data for Reliance, skipping the first two rows (usually metadata or headers)
 df = pd.read_csv("data/RELIANCE.csv", skiprows=2)
 
 # Rename the columns to standard financial OHLCV format
@@ -12,7 +11,6 @@ df.columns = ['Date', 'Close', 'High', 'Low', 'Open', 'Volume']
 # Convert the 'Close' column to numeric, coercing errors (e.g., invalid strings become NaN)
 df['Close'] = pd.to_numeric(df['Close'], errors='coerce')
 
-# Drop rows where 'Close' price is missing, and reset the DataFrame index
 df = df.dropna(subset=['Close']).reset_index(drop=True)
 
 # Initialize the trading environment using the processed stock data
