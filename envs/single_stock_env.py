@@ -57,7 +57,7 @@ class SingleStockTradingEnv(gym.Env):
         elif action == 4:  # Sell all
             shares_to_sell = self.shares
 
-        # Execute
+        # Executing
         if shares_to_buy > 0:
             self.cash -= shares_to_buy * price
             self.shares += shares_to_buy
