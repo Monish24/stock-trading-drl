@@ -7,7 +7,7 @@ from agent import TradingAgent
 from utils import plot_performance
 
 # Parameters? maybe
-DATA_DIR = Path("data/raw")
+DATA_DIR = Path("data/rawrl")
 TICKER = "RELIANCE.NS"
 EPISODES = 10
 INITIAL_BALANCE = 10000  #Rupees
