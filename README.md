@@ -1,4 +1,4 @@
-# Deep Reinforcement Learning for Multi-Modal Stock Trading: A Comprehensive Project Plan
+# Deep Reinforcement Learning for Multi-Modal Stock Trading: A Comprehensive Project Plan (Not complete yet, this is the main idea)
 
 ## Executive Summary
 
