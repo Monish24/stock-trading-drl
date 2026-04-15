@@ -90,21 +90,33 @@ def process_data(tickers: list[str] = None, start: str = None, end: str = None) 
     # Fetch
     stock_data = fetch_stock_data(tickers, start, end)
 
+    # Remove tickers with too few rows or all-NaN prices (failed downloads)
+    valid_tickers = []
+    for t in stock_data["ticker"].unique():
+        tdf = stock_data[stock_data["ticker"] == t]
+        non_null = tdf["close"].notna().sum()
+        if non_null > 100:
+            valid_tickers.append(t)
+        else:
+            print(f"  Dropping {t} — only {non_null} valid rows")
+    stock_data = stock_data[stock_data["ticker"].isin(valid_tickers)].reset_index(drop=True)
+    print(f"  Kept {len(valid_tickers)} stocks with sufficient data")
+
     # Save raw
     raw_path = RAW_DATA_DIR / "stock_data_raw.csv"
     stock_data.to_csv(raw_path, index=False)
     print(f"  Raw data saved to {raw_path}")
 
-    # Add indicators
+    # Add indicators per ticker
     print("Adding technical indicators...")
-    stock_data = stock_data.groupby("ticker", group_keys=False).apply(
-        add_technical_indicators, include_groups=False
-    )
-    # Restore the ticker column that gets excluded with include_groups=False
-    if "ticker" not in stock_data.columns:
-        stock_data = stock_data.reset_index()
-
-    stock_data = stock_data.dropna().reset_index(drop=True)
+    dfs = []
+    for ticker in stock_data["ticker"].unique():
+        df = stock_data[stock_data["ticker"] == ticker].copy()
+        df = df.dropna(subset=["close"])  # Drop any NaN price rows per ticker
+        df = add_technical_indicators(df)
+        df = df.dropna().reset_index(drop=True)
+        dfs.append(df)
+    stock_data = pd.concat(dfs, ignore_index=True)
 
     # Save processed
     processed_path = PROCESSED_DATA_DIR / "stock_data_processed.csv"
@@ -113,7 +125,6 @@ def process_data(tickers: list[str] = None, start: str = None, end: str = None) 
     print(f"  Shape: {stock_data.shape} | Features: {len(stock_data.columns)}")
 
     return stock_data
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Fetch and process stock data")

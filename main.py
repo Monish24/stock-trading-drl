@@ -64,8 +64,11 @@ def main():
 
     # ── Step 3: Create Environments ───────────────────────────────────────────
     print("\nCreating trading environments...")
-    train_env = StockTradingEnv(train_data, tickers=tickers, use_sentiment=use_sentiment)
-    test_env_template = lambda: StockTradingEnv(test_data, tickers=tickers, use_sentiment=use_sentiment)
+    # Use only tickers that actually exist in the data
+    available_tickers = sorted(train_data["ticker"].unique().tolist())
+    print(f"  Available tickers: {len(available_tickers)} — {available_tickers}")
+    train_env = StockTradingEnv(train_data, tickers=available_tickers, use_sentiment=use_sentiment)
+    test_env_template = lambda: StockTradingEnv(test_data, tickers=available_tickers, use_sentiment=use_sentiment)
 
     print(f"  Assets: {train_env.n_assets}")
     print(f"  Features per asset: {train_env.n_features}")

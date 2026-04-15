@@ -113,14 +113,18 @@ class StockTradingEnv(gym.Env):
             self.features[:, i, :] = df[self.feature_cols].values.astype(np.float32)
             self.close_prices[:, i] = df["close"].values.astype(np.float32)
 
+        # Replace NaN/Inf BEFORE normalizing
+        self.features = np.nan_to_num(self.features, nan=0.0, posinf=0.0, neginf=0.0)
+        self.close_prices = np.nan_to_num(self.close_prices, nan=1.0, posinf=1.0, neginf=1.0)
+
         # Normalize features (z-score per feature across all data)
-        self.feat_mean = np.nanmean(self.features, axis=0, keepdims=True)
-        self.feat_std = np.nanstd(self.features, axis=0, keepdims=True) + 1e-8
+        self.feat_mean = self.features.mean(axis=0, keepdims=True)
+        self.feat_std = self.features.std(axis=0, keepdims=True) + 1e-8
         self.features = (self.features - self.feat_mean) / self.feat_std
 
-        # Replace any remaining NaN with 0
-        self.features = np.nan_to_num(self.features, nan=0.0)
-
+        # Final safety check
+        self.features = np.nan_to_num(self.features, nan=0.0, posinf=0.0, neginf=0.0)
+    
     def _get_obs(self) -> np.ndarray:
         """Build observation from current window + portfolio weights."""
         start = self.current_step - self.window_size

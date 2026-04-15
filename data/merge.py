@@ -27,9 +27,10 @@ def merge_stock_and_sentiment(
     sentiment_path = sentiment_path or str(SENTIMENT_DATA_DIR / "sentiment_daily.csv")
 
     stock_data = pd.read_csv(stock_path, parse_dates=["date"])
-
+    stock_data["date"] = pd.to_datetime(stock_data["date"]).dt.tz_localize(None)
     try:
         sentiment = pd.read_csv(sentiment_path, parse_dates=["date_only"])
+        sentiment["date_only"] = pd.to_datetime(sentiment["date_only"]).dt.tz_localize(None)
     except FileNotFoundError:
         print("No sentiment data found — using price features only.")
         for col in SENTIMENT_COLS + ["news_count"]:
