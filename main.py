@@ -11,6 +11,7 @@ Usage:
     python main.py --timesteps 200000           # More training
     python main.py --skip-data                  # Skip data fetch (use cached)
 """
+import os
 import argparse
 import pandas as pd
 from pathlib import Path
